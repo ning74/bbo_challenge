@@ -25,19 +25,14 @@ class BoEI(AbstractOptimizer):
         """
         AbstractOptimizer.__init__(self, api_config)
         
-#         print ('api_config: ', api_config)
         api_space = BoEI.api_manipulator(api_config)  # used for GPyOpt initialization
-#         print('api_space: ', api_space)
+
         self.space_x = JointSpace(api_config) # used for warping & unwarping of new suggestions & observations
-#         print('space_x: ', self.space_x)
+
         self.hasCat, self.cat_vec = BoEI.is_cat(api_config)
-#         print('cat_vec: ', self.cat_vec)
         
         self.dim = len(self.space_x.get_bounds())
-        
-#         self.func = GPyOpt.objective_examples.experiments2d.branin()
-        
-#         self.objective = GPyOpt.core.task.SingleObjective(self.func.f)
+
         self.objective = GPyOpt.core.task.SingleObjective(None)
 
         self.space = GPyOpt.Design_space(api_space)
@@ -51,9 +46,6 @@ class BoEI(AbstractOptimizer):
         
         self.batch_size = None
         
-#         self.max_iter = 16
-        
-#         self.max_time = np.inf
 
         
     # return an array that indicates which variable is cat/ordinal
@@ -177,10 +169,8 @@ class BoEI(AbstractOptimizer):
         """
        
         if self.batch_size is None:
-#             print('first suggest')
             next_guess = GPyOpt.experiment_design.initial_design('random', self.space, n_suggestions)
         else:
-#             print('other suggest')
             next_guess = self.bo._compute_next_evaluations()#in the shape of np.zeros((n_suggestions, self.dim))
     
 
@@ -218,7 +208,6 @@ class BoEI(AbstractOptimizer):
              
 
         suggestions = self.space_x.unwarp(next_guess)
-#         print("suggest: ", suggestions)
         
         return suggestions
     
@@ -236,9 +225,6 @@ class BoEI(AbstractOptimizer):
             Corresponding values where objective has been evaluated
         """
         assert len(X) == len(y)
-
-#         print('X', X)
-#         print('y', y)
         
         XX = self.space_x.warp(X)
         yy = np.array(y)[:, None]
